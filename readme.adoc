@@ -1,0 +1,7 @@
+= jQAssistant Tycho Plugin
+
+This is the https://eclipse.org/tycho/[Tycho Plugin^]
+of https://www.jqassistant.org[jQAssistant^].
+It enables jQAssistant to scan and to analyze Tycho projects.
+
+For more information on jQAssistant see https://www.jqassistant.org[^].
