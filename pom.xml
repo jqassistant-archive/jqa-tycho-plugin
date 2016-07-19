@@ -12,6 +12,7 @@
 
     <groupId>com.buschmais.jqassistant.plugin</groupId>
     <artifactId>tycho</artifactId>
+    <name>jQAssistant Tycho Plugin</name>
 
     <build>
         <plugins>
