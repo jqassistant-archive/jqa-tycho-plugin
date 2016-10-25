@@ -34,6 +34,13 @@
         </license>
     </licenses>
 
+    <scm>
+        <connection>scm:git:git@github.com:buschmais/jqa-tycho-plugin.git</connection>
+        <developerConnection>scm:git:git@github.com:buschmais/jqa-tycho-plugin.git</developerConnection>
+        <url>https://github.com/buschmais/jqa-tycho-plugin</url>
+    </scm>
+
+
     <build>
         <plugins>
         </plugins>
