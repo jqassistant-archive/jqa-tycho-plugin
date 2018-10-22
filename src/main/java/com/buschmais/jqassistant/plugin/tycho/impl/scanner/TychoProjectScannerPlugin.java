@@ -38,7 +38,7 @@ public class TychoProjectScannerPlugin extends AbstractScannerPlugin<MavenProjec
     private static final String PACKAGING_ECLIPSE_PLUGIN = "eclipse-plugin";
 
     @Override
-    public boolean accepts(MavenProject item, String path, Scope scope) throws IOException {
+    public boolean accepts(MavenProject item, String path, Scope scope) {
         return PACKAGING_ECLIPSE_PLUGIN.equals(item.getPackaging());
     }
 
