@@ -1,7 +1,6 @@
 package com.buschmais.jqassistant.plugin.tycho.impl.scanner;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -15,16 +14,15 @@ import com.buschmais.jqassistant.plugin.common.api.model.ArtifactFileDescriptor;
 import com.buschmais.jqassistant.plugin.java.api.model.JavaClassesDirectoryDescriptor;
 import com.buschmais.jqassistant.plugin.maven3.api.model.MavenProjectDirectoryDescriptor;
 
-import org.apache.maven.artifact.Artifact;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.tycho.core.TychoConstants;
 import org.eclipse.tycho.core.osgitools.project.EclipsePluginProject;
 import org.eclipse.tycho.core.shared.BuildProperties;
 import org.hamcrest.Matcher;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.Matchers.empty;
@@ -32,18 +30,17 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@RunWith(Parameterized.class)
+@ExtendWith(MockitoExtension.class)
 public class TychoProjectScannerPluginTest {
 
     private final static Class<?> clazz = TychoProjectScannerPluginTest.class;
 
-    private final Scanner scanner;
-    private final ScannerContext scannerContext;
-    private final MavenProject project;
-    private final Store store;
-    private final Matcher<? super Collection<? extends File>> matcher;
+    private Scanner scanner;
+    private ScannerContext scannerContext;
+    private MavenProject project;
+    private Store store;
+    private Matcher<? super Collection<? extends File>> matcher;
 
-    @Parameters
     public static List<Object[]> data() {
         Object[] nothingSelected = new Object[] { new ArrayList<String>(), new ArrayList<String>(), is(empty()) };
         Object[] oneFileSelected = new Object[] { Collections.singletonList("log"), new ArrayList<String>(),
@@ -55,7 +52,11 @@ public class TychoProjectScannerPluginTest {
         return Arrays.asList(new Object[][] { nothingSelected, oneFileSelected, oneFileAndFolderSelected, oneFileExcluded });
     }
 
-    public TychoProjectScannerPluginTest(List<String> includes, List<String> excludes, Matcher<? super Collection<? extends File>> matcher) throws IOException {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testGetAdditionalFiles(List<String> includes, List<String> excludes,
+                                       Matcher<? super Collection<? extends File>> matcher)
+        throws Exception {
         this.scanner = mock(Scanner.class);
         this.scannerContext = mock(ScannerContext.class);
         this.store = mock(Store.class);
@@ -63,7 +64,6 @@ public class TychoProjectScannerPluginTest {
         this.matcher = matcher;
 
         when(scanner.getContext()).thenReturn(scannerContext);
-        when(scannerContext.getStore()).thenReturn(store);
 
         EclipsePluginProject pdeProject = mock(EclipsePluginProject.class);
         BuildProperties properties = mock(BuildProperties.class);
@@ -74,17 +74,6 @@ public class TychoProjectScannerPluginTest {
         when(pdeProject.getBuildProperties()).thenReturn(properties);
         when(project.getBasedir()).thenReturn(new File(getClass().getResource(".").getFile()));
 
-        when(project.getGroupId()).thenReturn("group");
-        when(project.getArtifactId()).thenReturn("artifact");
-        when(project.getVersion()).thenReturn("1.0.0");
-
-        Artifact artifact = mock(Artifact.class);
-        when(artifact.getGroupId()).thenReturn("group");
-        when(artifact.getArtifactId()).thenReturn("artifact");
-        when(artifact.getType()).thenReturn("jar");
-        when(artifact.getVersion()).thenReturn("1.0.0");
-        when(project.getArtifact()).thenReturn(artifact);
-
         JavaClassesDirectoryDescriptor artifactDescriptor = mock(JavaClassesDirectoryDescriptor.class);
         when(artifactDescriptor.getType()).thenReturn("eclipse-plugin");
         List<ArtifactFileDescriptor> artifacts = new ArrayList<>();
@@ -92,10 +81,9 @@ public class TychoProjectScannerPluginTest {
         MavenProjectDirectoryDescriptor mavenProjectDirectoryDescriptor = mock(MavenProjectDirectoryDescriptor.class);
         when(mavenProjectDirectoryDescriptor.getCreatesArtifacts()).thenReturn(artifacts);
         when(scannerContext.peek(MavenProjectDirectoryDescriptor.class)).thenReturn(mavenProjectDirectoryDescriptor);
-    }
 
-    @Test
-    public void testGetAdditionalFiles() throws Exception {
+        //----
+
         TychoProjectScannerPlugin plugin = new TychoProjectScannerPlugin();
         plugin.configure(scannerContext, Collections.<String, Object>emptyMap());
         plugin.scan(project, null, null, scanner);
