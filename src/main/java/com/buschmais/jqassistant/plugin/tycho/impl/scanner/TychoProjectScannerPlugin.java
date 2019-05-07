@@ -2,17 +2,12 @@ package com.buschmais.jqassistant.plugin.tycho.impl.scanner;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import com.buschmais.jqassistant.core.scanner.api.Scanner;
 import com.buschmais.jqassistant.core.scanner.api.ScannerPlugin;
 import com.buschmais.jqassistant.core.scanner.api.Scope;
-import com.buschmais.jqassistant.plugin.common.api.model.ArtifactFileDescriptor;
+import com.buschmais.jqassistant.plugin.common.api.model.ArtifactDescriptor;
 import com.buschmais.jqassistant.plugin.common.api.model.FileDescriptor;
 import com.buschmais.jqassistant.plugin.common.api.scanner.AbstractScannerPlugin;
 import com.buschmais.jqassistant.plugin.java.api.model.JavaArtifactFileDescriptor;
@@ -45,15 +40,16 @@ public class TychoProjectScannerPlugin extends AbstractScannerPlugin<MavenProjec
     @Override
     public MavenProjectDirectoryDescriptor scan(MavenProject project, String path, Scope scope, Scanner scanner) throws IOException {
         MavenProjectDirectoryDescriptor mavenProjectDirectoryDescriptor = scanner.getContext().peek(MavenProjectDirectoryDescriptor.class);
-        for (ArtifactFileDescriptor artifact : mavenProjectDirectoryDescriptor.getCreatesArtifacts()) {
+        for (ArtifactDescriptor artifact : mavenProjectDirectoryDescriptor.getCreatesArtifacts()) {
             if (artifact instanceof JavaArtifactFileDescriptor && artifact.getType().equals(PACKAGING_ECLIPSE_PLUGIN)) {
-                scanner.getContext().push(JavaArtifactFileDescriptor.class, (JavaArtifactFileDescriptor) artifact);
+                JavaArtifactFileDescriptor javaArtifactFileDescriptor = (JavaArtifactFileDescriptor) artifact;
+                scanner.getContext().push(JavaArtifactFileDescriptor.class, javaArtifactFileDescriptor);
                 try {
                     for (File file : getPdeFiles(project)) {
                         String filePath = getDirectoryPath(project.getBasedir(), file);
                         FileDescriptor fileDescriptor = scanner.scan(file, filePath, CLASSPATH);
                         if (fileDescriptor != null) {
-                            artifact.getContains().add(fileDescriptor);
+                            javaArtifactFileDescriptor.getContains().add(fileDescriptor);
                         }
                     }
                 } finally {
@@ -89,9 +85,9 @@ public class TychoProjectScannerPlugin extends AbstractScannerPlugin<MavenProjec
     }
 
     /**
-     * @return a {@link PlexusIoFileResourceCollection} with the given includes
-     *         and excludes and the configured default excludes. An empty list
-     *         of includes leads to an empty collection.
+     * @return a {@link PlexusIoFileResourceCollection} with the given includes and
+     *         excludes and the configured default excludes. An empty list of
+     *         includes leads to an empty collection.
      */
     protected PlexusIoFileResourceCollection getResourceFileCollection(File basedir, List<String> includes, List<String> excludes) {
         PlexusIoFileResourceCollection collection = new PlexusIoFileResourceCollection();

@@ -1,16 +1,11 @@
 package com.buschmais.jqassistant.plugin.tycho.impl.scanner;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import com.buschmais.jqassistant.core.scanner.api.Scanner;
 import com.buschmais.jqassistant.core.scanner.api.ScannerContext;
-import com.buschmais.jqassistant.core.store.api.Store;
-import com.buschmais.jqassistant.plugin.common.api.model.ArtifactFileDescriptor;
+import com.buschmais.jqassistant.plugin.common.api.model.ArtifactDescriptor;
 import com.buschmais.jqassistant.plugin.java.api.model.JavaClassesDirectoryDescriptor;
 import com.buschmais.jqassistant.plugin.maven3.api.model.MavenProjectDirectoryDescriptor;
 
@@ -38,8 +33,6 @@ public class TychoProjectScannerPluginTest {
     private Scanner scanner;
     private ScannerContext scannerContext;
     private MavenProject project;
-    private Store store;
-    private Matcher<? super Collection<? extends File>> matcher;
 
     public static List<Object[]> data() {
         Object[] nothingSelected = new Object[] { new ArrayList<String>(), new ArrayList<String>(), is(empty()) };
@@ -54,14 +47,10 @@ public class TychoProjectScannerPluginTest {
 
     @ParameterizedTest
     @MethodSource("data")
-    public void testGetAdditionalFiles(List<String> includes, List<String> excludes,
-                                       Matcher<? super Collection<? extends File>> matcher)
-        throws Exception {
+    public void testGetAdditionalFiles(List<String> includes, List<String> excludes, Matcher<? super Collection<? extends File>> matcher) throws Exception {
         this.scanner = mock(Scanner.class);
         this.scannerContext = mock(ScannerContext.class);
-        this.store = mock(Store.class);
         this.project = mock(MavenProject.class);
-        this.matcher = matcher;
 
         when(scanner.getContext()).thenReturn(scannerContext);
 
@@ -76,16 +65,16 @@ public class TychoProjectScannerPluginTest {
 
         JavaClassesDirectoryDescriptor artifactDescriptor = mock(JavaClassesDirectoryDescriptor.class);
         when(artifactDescriptor.getType()).thenReturn("eclipse-plugin");
-        List<ArtifactFileDescriptor> artifacts = new ArrayList<>();
+        List<ArtifactDescriptor> artifacts = new ArrayList<>();
         artifacts.add(artifactDescriptor);
         MavenProjectDirectoryDescriptor mavenProjectDirectoryDescriptor = mock(MavenProjectDirectoryDescriptor.class);
         when(mavenProjectDirectoryDescriptor.getCreatesArtifacts()).thenReturn(artifacts);
         when(scannerContext.peek(MavenProjectDirectoryDescriptor.class)).thenReturn(mavenProjectDirectoryDescriptor);
 
-        //----
+        // ----
 
         TychoProjectScannerPlugin plugin = new TychoProjectScannerPlugin();
-        plugin.configure(scannerContext, Collections.<String, Object>emptyMap());
+        plugin.configure(scannerContext, Collections.emptyMap());
         plugin.scan(project, null, null, scanner);
         // FIXME: add assertions
     }
