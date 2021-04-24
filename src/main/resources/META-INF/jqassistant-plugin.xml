@@ -1,7 +1,10 @@
-<jqa-plugin:jqassistant-plugin xmlns:jqa-plugin="http://www.buschmais.com/jqassistant/core/plugin/schema/v1.4"
-                               name="Tycho">
+<jpd:jqassistant-plugin xmlns:jpd="http://schema.jqassistant.org/plugin/v1.10"
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xsi:schemaLocation="http://schema.jqassistant.org/plugin/v1.10 https://schema.jqassistant.org/plugin/jqassistant-plugin-v1.10.xsd"
+                        name="Tycho" id="jqa.plugin.tycho">
+
     <description>Provides a scanner for tycho modules.</description>
     <scanner>
         <class>com.buschmais.jqassistant.plugin.tycho.impl.scanner.TychoProjectScannerPlugin</class>
     </scanner>
-</jqa-plugin:jqassistant-plugin>
+</jpd:jqassistant-plugin>
