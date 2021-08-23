@@ -26,7 +26,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class TychoProjectScannerPluginTest {
+class TychoProjectScannerPluginTest {
 
     private final static Class<?> clazz = TychoProjectScannerPluginTest.class;
 
@@ -34,7 +34,7 @@ public class TychoProjectScannerPluginTest {
     private ScannerContext scannerContext;
     private MavenProject project;
 
-    public static List<Object[]> data() {
+    static List<Object[]> data() {
         Object[] nothingSelected = new Object[] { new ArrayList<String>(), new ArrayList<String>(), is(empty()) };
         Object[] oneFileSelected = new Object[] { Collections.singletonList("log"), new ArrayList<String>(),
                 hasItems(new File(clazz.getResource("log").getFile())) };
@@ -47,7 +47,7 @@ public class TychoProjectScannerPluginTest {
 
     @ParameterizedTest
     @MethodSource("data")
-    public void testGetAdditionalFiles(List<String> includes, List<String> excludes, Matcher<? super Collection<? extends File>> matcher) throws Exception {
+    void testGetAdditionalFiles(List<String> includes, List<String> excludes, Matcher<? super Collection<? extends File>> matcher) throws Exception {
         this.scanner = mock(Scanner.class);
         this.scannerContext = mock(ScannerContext.class);
         this.project = mock(MavenProject.class);
