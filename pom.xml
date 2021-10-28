@@ -4,13 +4,13 @@
     <parent>
         <groupId>com.buschmais.jqassistant.plugin</groupId>
         <artifactId>parent</artifactId>
-        <version>1.11.0-SNAPSHOT</version>
+        <version>1.11.0</version>
         <relativePath/>
     </parent>
 
     <groupId>com.buschmais.jqassistant.plugin</groupId>
     <artifactId>tycho</artifactId>
-    <version>1.11.0-SNAPSHOT</version>
+    <version>1.11.0</version>
 
     <name>jQAssistant Tycho Plugin</name>
     <url>http://jqassistant.org/</url>
@@ -40,8 +40,8 @@
   </scm>
 
     <properties>
-        <jqa-plugin-common.version>1.11.0-SNAPSHOT</jqa-plugin-common.version>
-        <jqa-maven3-plugin.version>1.11.0-SNAPSHOT</jqa-maven3-plugin.version>
+        <jqa-plugin-common.version>1.11.0</jqa-plugin-common.version>
+        <jqa-maven3-plugin.version>1.11.0</jqa-maven3-plugin.version>
         <asciidoctor.toplevelid>tycho-plugin</asciidoctor.toplevelid>
     </properties>
 
